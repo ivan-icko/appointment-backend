@@ -11,8 +11,8 @@ import {
 import { ApiTags, ApiOperation, ApiResponse, ApiParam } from '@nestjs/swagger';
 import { AppointmentsService } from './appointments.service';
 import { Appointment } from './appointment.entity';
-import { CreateAppointmentDto } from '../dto/create-appointment.dto';
-import { CancelAppointmentDto } from '../dto/cancel-appointment.dto';
+import { CreateAppointmentDto } from './dto/create-appointment.dto';
+import { CancelAppointmentDto } from './dto/cancel-appointment.dto';
 
 @ApiTags('appointments')
 @Controller('appointments')
