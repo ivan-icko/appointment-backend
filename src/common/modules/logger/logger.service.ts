@@ -4,7 +4,7 @@ import { getEnv } from '../../utils/string.util';
 import {
   LOGGER_LEVEL,
   LOGGER_WINSTON_PROVIDER,
-} from 'src/common/constants/logger';
+} from '../../../common/constants/logger';
 
 @Injectable({
   scope: Scope.REQUEST,

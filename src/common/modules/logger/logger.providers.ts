@@ -3,8 +3,8 @@ import { ConfigService } from '@nestjs/config';
 import * as Transport from 'winston-transport';
 import { TransportFactory } from './transport.factory';
 import { TransportConfig } from './config.interface';
-import { LOGGER_WINSTON_PROVIDER } from 'src/common/constants/logger';
-import { LOGGER_CONFIG } from 'src/common/constants/global';
+import { LOGGER_WINSTON_PROVIDER } from '../../../common/constants/logger';
+import { LOGGER_CONFIG } from '../../../common/constants/global';
 
 export const useFactory = (
   configService: ConfigService,

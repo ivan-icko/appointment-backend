@@ -6,6 +6,7 @@ import { LoggerModule } from './common/modules/logger/logger.module';
 import { AppointmentsModule } from './modules/appointments/appointments.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Appointment } from './modules/appointments/appointment.entity';
+import { ResponseModule } from './common/modules/response/response.module';
 
 @Module({
   imports: [
@@ -23,6 +24,7 @@ import { Appointment } from './modules/appointments/appointment.entity';
     TypeOrmModule.forFeature([Appointment]),
     HelloWorldModule,
     AppointmentsModule,
+    ResponseModule,
   ],
   controllers: [],
   providers: [],

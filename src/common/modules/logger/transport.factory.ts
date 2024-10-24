@@ -3,7 +3,7 @@ import { format } from 'logform';
 import * as Transport from 'winston-transport';
 import { TransportConfig } from './config.interface';
 import DailyRotateFile from 'winston-daily-rotate-file';
-import { AVAILABLE_TRANSPORTS } from 'src/common/constants/logger';
+import { AVAILABLE_TRANSPORTS } from '../../../common/constants/logger';
 export class TransportFactory {
   public createTransport(config: TransportConfig): Transport {
     let transport: DailyRotateFile | Transport;

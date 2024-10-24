@@ -1,10 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { LoggerService } from '../../common/modules/logger/logger.service';
-import { BadRequestException } from '../../common/exceptions/bad-request.exception';
 import { CreateAppointmentDto } from './dto/create-appointment.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Appointment } from './appointment.entity';
+import { BadRequestException } from '../../common/exceptions/bad-request.exception';
 
 @Injectable()
 export class AppointmentsService {

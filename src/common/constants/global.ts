@@ -11,3 +11,4 @@ export const DEFAULT_FRONT_ORIGIN = 'https://www.test.rs';
 export const DEFAULT_ENV = ENVIRONMENTS.DEVELOPMENT;
 
 export const LOGGER_CONFIG = 'logger';
+export const GENERAL_CONFIG = 'general';

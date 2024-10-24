@@ -7,15 +7,21 @@ import {
   Delete,
   UsePipes,
   ValidationPipe,
+  UseInterceptors,
+  UseFilters,
 } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse, ApiParam } from '@nestjs/swagger';
 import { AppointmentsService } from './appointments.service';
 import { Appointment } from './appointment.entity';
 import { CreateAppointmentDto } from './dto/create-appointment.dto';
 import { CancelAppointmentDto } from './dto/cancel-appointment.dto';
+import { LoggerInterceptor } from '../../common/interceptors/logger.interceptor';
+import { HttpExceptionFilter } from '../../common/filters/http-exception.filter';
 
 @ApiTags('appointments')
 @Controller('appointments')
+@UseInterceptors(LoggerInterceptor)
+@UseFilters(HttpExceptionFilter)
 export class AppointmentsController {
   constructor(private readonly appointmentsService: AppointmentsService) {}
 
