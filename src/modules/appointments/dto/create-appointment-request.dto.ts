@@ -9,7 +9,7 @@ import {
   Matches,
 } from 'class-validator';
 
-export class CreateAppointmentDto {
+export class CreateAppointmentRequestDto {
   @ApiProperty()
   @IsNotEmpty()
   @IsString()
@@ -23,7 +23,7 @@ export class CreateAppointmentDto {
   @ApiProperty()
   @IsNotEmpty()
   @IsDateString()
-  date: string;
+  date: Date;
 
   @ApiProperty()
   @IsNotEmpty()

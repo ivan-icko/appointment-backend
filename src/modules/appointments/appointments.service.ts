@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { LoggerService } from '../../common/modules/logger/logger.service';
-import { CreateAppointmentDto } from './dto/create-appointment.dto';
+import { CreateAppointmentRequestDto } from './dto/create-appointment-request.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Appointment } from './appointment.entity';
@@ -20,12 +20,14 @@ export class AppointmentsService {
     });
   }
 
-  async getAppointmentsByDate(date: string): Promise<Appointment[]> {
-    return await this.appointmentsRepository.find({ where: { date } });
+  async getAppointmentsByDate(date: Date): Promise<Appointment[]> {
+    return await this.appointmentsRepository.find({
+      where: { date },
+    });
   }
 
   async createAppointment(
-    createAppointmentDto: CreateAppointmentDto,
+    createAppointmentDto: CreateAppointmentRequestDto,
   ): Promise<Appointment> {
     const newAppointment =
       this.appointmentsRepository.create(createAppointmentDto);
@@ -57,10 +59,10 @@ export class AppointmentsService {
       }
     }
 
-    const newEndTimeDate = new Date(newEndTime);
-    if (newEndTimeDate.toISOString().split('T')[0] !== newAppointment.date) {
+    /*const newEndTimeDate = new Date(newEndTime);
+      if (newEndTimeDate.toISOString().split('T')[0] !== newAppointment.date) {
       throw new BadRequestException('Appointment must end on the same day');
-    }
+    } */
 
     return this.appointmentsRepository.save(newAppointment);
   }

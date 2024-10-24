@@ -13,17 +13,23 @@ import {
 import { ApiTags, ApiOperation, ApiResponse, ApiParam } from '@nestjs/swagger';
 import { AppointmentsService } from './appointments.service';
 import { Appointment } from './appointment.entity';
-import { CreateAppointmentDto } from './dto/create-appointment.dto';
+import { CreateAppointmentRequestDto } from './dto/create-appointment-request.dto';
 import { CancelAppointmentDto } from './dto/cancel-appointment.dto';
 import { LoggerInterceptor } from '../../common/interceptors/logger.interceptor';
 import { HttpExceptionFilter } from '../../common/filters/http-exception.filter';
+import { ResponseService } from '../../common/modules/response/response.service';
+import { plainToInstance } from 'class-transformer';
+import { CreateAppointmentResponseDto } from './dto/create-appointment-response.dto';
 
 @ApiTags('appointments')
 @Controller('appointments')
 @UseInterceptors(LoggerInterceptor)
 @UseFilters(HttpExceptionFilter)
 export class AppointmentsController {
-  constructor(private readonly appointmentsService: AppointmentsService) {}
+  constructor(
+    private readonly appointmentsService: AppointmentsService,
+    private readonly response: ResponseService,
+  ) {}
 
   @Get()
   @ApiOperation({ summary: 'Get all upcoming appointments' })
@@ -48,7 +54,7 @@ export class AppointmentsController {
     type: [Appointment],
   })
   getAppointmentsByDate(@Param('date') date: string): Promise<Appointment[]> {
-    return this.appointmentsService.getAppointmentsByDate(date);
+    return this.appointmentsService.getAppointmentsByDate(new Date(date));
   }
 
   @Post()
@@ -59,10 +65,17 @@ export class AppointmentsController {
     type: Appointment,
   })
   @UsePipes(new ValidationPipe({ whitelist: true, forbidNonWhitelisted: true }))
-  createAppointment(
-    @Body() createAppointmentDto: CreateAppointmentDto,
-  ): Promise<Appointment> {
-    return this.appointmentsService.createAppointment(createAppointmentDto);
+  async createAppointment(
+    @Body() createAppointmentDto: CreateAppointmentRequestDto,
+  ) {
+    const newAppointment: Appointment =
+      await this.appointmentsService.createAppointment(createAppointmentDto);
+
+    return this.response.success(
+      plainToInstance(CreateAppointmentResponseDto, newAppointment, {
+        excludeExtraneousValues: true,
+      }),
+    );
   }
 
   @Delete(':id')
@@ -75,7 +88,8 @@ export class AppointmentsController {
     status: 200,
     description: 'The appointment was successfully canceled',
   })
-  cancelAppointment(@Param() params: CancelAppointmentDto): Promise<void> {
-    return this.appointmentsService.cancelAppointment(params.id);
+  cancelAppointment(@Param() params: CancelAppointmentDto) {
+    this.appointmentsService.cancelAppointment(params.id);
+    return this.response.success({});
   }
 }

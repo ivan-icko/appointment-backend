@@ -12,7 +12,7 @@ export class Appointment {
   description: string;
 
   @Column()
-  date: string;
+  date: Date;
 
   @Column()
   startTime: string;
