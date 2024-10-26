@@ -29,16 +29,29 @@ export class AppointmentsService {
   async createAppointment(
     createAppointmentDto: CreateAppointmentRequestDto,
   ): Promise<Appointment> {
+    const { date, startTime, duration } = createAppointmentDto;
+
+    // Validate multiple of 30 minutes
+    if (duration % 30 !== 0) {
+      throw new BadRequestException(
+        'Duration must be a minimum of 30 minutes and in multiples of 30 minutes',
+      );
+    }
+
+    // Validate that the start time falls on full or half-hours
+    const startMinutes = new Date(`${date} ${startTime}`).getMinutes();
+    if (startMinutes !== 0 && startMinutes !== 30) {
+      throw new BadRequestException(
+        'Appointment must start on full or half-hour marks',
+      );
+    }
+
     const newAppointment =
       this.appointmentsRepository.create(createAppointmentDto);
-    const appointmentsOnDate = await this.getAppointmentsByDate(
-      createAppointmentDto.date,
-    );
+    const appointmentsOnDate = await this.getAppointmentsByDate(date);
 
-    const newStartTime = new Date(
-      `${createAppointmentDto.date} ${createAppointmentDto.startTime}`,
-    ).getTime();
-    const newEndTime = newStartTime + createAppointmentDto.duration * 60 * 1000;
+    const newStartTime = new Date(`${date} ${startTime}`).getTime();
+    const newEndTime = newStartTime + duration * 60 * 1000;
 
     for (const appointment of appointmentsOnDate) {
       const existingStartTime = new Date(
@@ -59,10 +72,11 @@ export class AppointmentsService {
       }
     }
 
-    /*const newEndTimeDate = new Date(newEndTime);
-      if (newEndTimeDate.toISOString().split('T')[0] !== newAppointment.date) {
+    // Ensure appointment ends on the same day
+    const newEndTimeDate = new Date(newEndTime);
+    if (newEndTimeDate !== newAppointment.date) {
       throw new BadRequestException('Appointment must end on the same day');
-    } */
+    }
 
     return this.appointmentsRepository.save(newAppointment);
   }
