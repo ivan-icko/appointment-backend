@@ -23,9 +23,11 @@ export class AppointmentsService {
   }
 
   async getAppointmentsByDate(date: Date): Promise<Appointment[]> {
-    return await this.appointmentsRepository.find({
+    const appointments = await this.appointmentsRepository.find({
       where: { date },
     });
+    console.log(appointments);
+    return appointments;
   }
 
   async createAppointment(
@@ -38,7 +40,7 @@ export class AppointmentsService {
 
     const appointmentsOnDate = await this.getAppointmentsByDate(date);
 
-    const newStartTime = new Date(`${date} ${startTime}`).getTime();
+    const newStartTime = date.getTime();
     const newEndTime = newStartTime + duration * 60 * 1000;
 
     this.validationService.checkOverlap(
@@ -49,7 +51,7 @@ export class AppointmentsService {
 
     // Ensure appointment ends on the same day
     const newEndTimeDate = new Date(newEndTime);
-    if (newEndTimeDate !== date) {
+    if (newEndTimeDate.getDate() !== date.getDate()) {
       throw new BadRequestException('Appointment must end on the same day');
     }
 

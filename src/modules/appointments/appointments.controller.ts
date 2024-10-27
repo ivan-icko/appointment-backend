@@ -9,8 +9,15 @@ import {
   ValidationPipe,
   UseInterceptors,
   UseFilters,
+  Query,
 } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiResponse, ApiParam } from '@nestjs/swagger';
+import {
+  ApiTags,
+  ApiOperation,
+  ApiResponse,
+  ApiParam,
+  ApiQuery,
+} from '@nestjs/swagger';
 import { AppointmentsService } from './appointments.service';
 import { Appointment } from './appointment.entity';
 import { CreateAppointmentRequestDto } from './dto/create-appointment-request.dto';
@@ -32,29 +39,27 @@ export class AppointmentsController {
   ) {}
 
   @Get()
-  @ApiOperation({ summary: 'Get all upcoming appointments' })
-  @ApiResponse({
-    status: 200,
-    description: 'List of upcoming appointments',
-    type: [Appointment],
+  @ApiOperation({
+    summary: 'Get appointments by date or all upcoming appointments',
   })
-  listUpcomingAppointments(): Promise<Appointment[]> {
-    return this.appointmentsService.listUpcomingAppointments();
-  }
-
-  @Get(':date')
-  @ApiOperation({ summary: 'Get appointments by specific date' })
-  @ApiParam({
+  @ApiQuery({
     name: 'date',
-    description: 'The date for which to retrieve appointments (YYYY-MM-DD)',
+    required: false,
+    description: 'Specific date to filter appointments (YYYY-MM-DD)',
   })
   @ApiResponse({
     status: 200,
-    description: 'List of appointments for a specific date',
+    description:
+      'List of upcoming appointments or appointments on a specific date',
     type: [Appointment],
   })
-  getAppointmentsByDate(@Param('date') date: string): Promise<Appointment[]> {
-    return this.appointmentsService.getAppointmentsByDate(new Date(date));
+  listUpcomingAppointments(
+    @Query('date') date?: string,
+  ): Promise<Appointment[]> {
+    if (date) {
+      return this.appointmentsService.getAppointmentsByDate(new Date(date));
+    }
+    return this.appointmentsService.listUpcomingAppointments();
   }
 
   @Post()
@@ -64,7 +69,13 @@ export class AppointmentsController {
     description: 'The newly created appointment',
     type: Appointment,
   })
-  @UsePipes(new ValidationPipe({ whitelist: true, forbidNonWhitelisted: true }))
+  @UsePipes(
+    new ValidationPipe({
+      transform: true,
+      whitelist: true,
+      forbidNonWhitelisted: true,
+    }),
+  )
   async createAppointment(
     @Body() createAppointmentDto: CreateAppointmentRequestDto,
   ) {

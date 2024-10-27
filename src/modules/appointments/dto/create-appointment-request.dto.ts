@@ -1,4 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { Type } from 'class-transformer';
 import {
   IsNotEmpty,
   IsString,
@@ -22,7 +23,7 @@ export class CreateAppointmentRequestDto {
 
   @ApiProperty()
   @IsNotEmpty()
-  @IsDateString()
+  @Type(() => Date)
   date: Date;
 
   @ApiProperty()
