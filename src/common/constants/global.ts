@@ -12,3 +12,4 @@ export const DEFAULT_ENV = ENVIRONMENTS.DEVELOPMENT;
 
 export const LOGGER_CONFIG = 'logger';
 export const GENERAL_CONFIG = 'general';
+export const DATABASE_CONFIG = 'database';

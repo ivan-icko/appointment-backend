@@ -26,7 +26,6 @@ export class AppointmentsService {
     const appointments = await this.appointmentsRepository.find({
       where: { date },
     });
-    console.log(appointments);
     return appointments;
   }
 
